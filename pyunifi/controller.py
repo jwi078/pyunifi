@@ -4,6 +4,7 @@ import requests
 import time
 import warnings
 
+
 """For testing purposes:
 logging.basicConfig(filename='pyunifi.log', level=logging.WARN,
                     format='%(asctime)s %(message)s')
@@ -329,6 +330,60 @@ class Controller(object):
         backupfile = open(target_file, 'w')
         backupfile.write(str(r.content))
         backupfile.close()
+    
+    def create_voucher(self, namount='1', quota='1', expire='1440',expire_number=None,expire_unit='1440', note=None, down_bandwith=None,
+                       up_bandwith=None,max_bytes=None):
+
+        """
+        Generate a voucher code
+
+        Arguments:
+            namount     -- number of vouchers to create, default value is 1
+            quota       -- single-use or multi-use vouchers, string value '0' is for multi-use, '1' is for single-use,
+                           "n" is for multi-use n times
+            expire      -- minutes the voucher is valid after activation, default value is 1
+            notes       -- note text to add to voucher when printing
+            up          -- uupload speed limit in kbps
+            down        -- download speed limit in kbps
+            bytes       -- data transfer limit in MB
+
+        """
+    
+        hotspot_url = self.api_url +'cmd/hotspot'
+        cmd='create-voucher'
+
+        js = {'cmd':cmd,'n':namount,'quota':quota,'expire':expire}
+
+        if expire_number:
+            js['expire_number'] = expire_number
+        if expire_unit:
+            js['expire_unit'] = expire_unit
+        if up_bandwith:
+            js['up'] = up_bandwith
+        if down_bandwith:
+            js['down'] = down_bandwith
+        if max_bytes:
+            js['bytes'] = max_bytes
+        if note:
+            js['note'] = note
+
+        return self._write(hotspot_url,js)
+    
+    def stat_voucher(self,create_time):
+
+        """
+        Retrieve a voucher based on the timestamp
+
+        Arguments:
+            create_time    -- voucher creation timestamp : 1495697982
+        """
+
+        statvoucher_url = self.api_url +'stat/voucher'
+        js = {'create_time': create_time}
+
+        return self._write(statvoucher_url,js)
+
+
 
     def authorize_guest(self, guest_mac, minutes, up_bandwidth=None,
                         down_bandwidth=None, byte_quota=None, ap_mac=None):
