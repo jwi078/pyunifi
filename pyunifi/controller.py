@@ -331,8 +331,8 @@ class Controller(object):
         backupfile.write(str(r.content))
         backupfile.close()
     
-    def create_voucher(self, namount='1', quota='1', expire='1440',expire_number=None,expire_unit='1440', note=None, down_bandwith=None,
-                       up_bandwith=None,max_bytes=None):
+    def create_voucher(self, namount='1', quota='1', expire='1440',expire_number=None,expire_unit='1440', 
+                       note=None, down_bandwith=None,up_bandwith=None,max_bytes=None):
 
         """
         Generate a voucher code
